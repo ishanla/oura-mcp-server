@@ -1,0 +1,12 @@
+task list 
+
+ Clone template repo locally (can't fork due to EMU)
+ Create new repo on GitHub (oura-mcp-server)
+ Update git remote to point to your new repo
+ Get Oura API token from cloud.ouraring.com/personal-access-tokens
+ Create .env locally (add to .gitignore)
+ Add Oura tools to server.py
+ Update render.yaml with OURA_ACCESS_TOKEN env var
+ Push to GitHub (secrets stay local)
+ Deploy to Render (enter token in Render dashboard)
+ Register MCP URL in Poke
