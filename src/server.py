@@ -42,8 +42,8 @@ def make_oura_request(endpoint: str, start_date: str = None, end_date: str = Non
 
 
 def get_today_date() -> str:
-    """Get today's date in YYYY-MM-DD format"""
-    return datetime.now().strftime("%Y-%m-%d")
+    """Get tomorrow's date in YYYY-MM-DD format (to ensure we capture most recent data)"""
+    return (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
 
 
 def get_date_n_days_ago(days: int) -> str:
@@ -52,75 +52,7 @@ def get_date_n_days_ago(days: int) -> str:
 
 
 # ============================================================================
-# CURRENT DATA TOOLS (TODAY)
-# ============================================================================
-
-@mcp.tool(description="Get last night's sleep data including duration, sleep stages (deep/light/REM), sleep score, heart rate, and HRV")
-def get_sleep_last_night() -> dict:
-    """Fetch sleep data for last night"""
-    today = get_today_date()
-    result = make_oura_request("sleep", start_date=today, end_date=today)
-    
-    # Extract the most recent sleep entry if multiple exist
-    if "data" in result and len(result["data"]) > 0:
-        return result["data"][-1]  # Return last entry
-    return result
-
-
-@mcp.tool(description="Get today's readiness score and contributors (HRV balance, sleep balance, recovery, activity balance, temperature, heart rate)")
-def get_readiness_today() -> dict:
-    """Fetch readiness data for today"""
-    today = get_today_date()
-    result = make_oura_request("daily_readiness", start_date=today, end_date=today)
-    
-    if "data" in result and len(result["data"]) > 0:
-        return result["data"][-1]
-    return result
-
-
-@mcp.tool(description="Get today's activity data including steps, calories, activity breakdown (high/medium/low), and MET minutes")
-def get_activity_today() -> dict:
-    """Fetch activity data for today"""
-    today = get_today_date()
-    result = make_oura_request("daily_activity", start_date=today, end_date=today)
-    
-    if "data" in result and len(result["data"]) > 0:
-        return result["data"][-1]
-    return result
-
-
-@mcp.tool(description="Get today's stress and recovery data including stress/recovery minutes and day summary (stressed/restored/mixed)")
-def get_daily_stress() -> dict:
-    """Fetch stress data for today"""
-    today = get_today_date()
-    result = make_oura_request("daily_stress", start_date=today, end_date=today)
-    
-    if "data" in result and len(result["data"]) > 0:
-        return result["data"][-1]
-    return result
-
-
-@mcp.tool(description="Get today's resilience level and contributors (sleep recovery, daytime recovery, stress) - your ability to handle stress")
-def get_daily_resilience() -> dict:
-    """Fetch resilience data for today"""
-    today = get_today_date()
-    result = make_oura_request("daily_resilience", start_date=today, end_date=today)
-    
-    if "data" in result and len(result["data"]) > 0:
-        return result["data"][-1]
-    return result
-
-
-@mcp.tool(description="Get any workouts logged today including type, calories, duration, and intensity")
-def get_workouts_today() -> dict:
-    """Fetch workout data for today"""
-    today = get_today_date()
-    result = make_oura_request("workout", start_date=today, end_date=today)
-    return result
-
-
-# ============================================================================
-# TREND DATA TOOLS (30-DAY BASELINE)
+# TREND DATA TOOLS (30-DAY HISTORICAL DATA)
 # ============================================================================
 
 @mcp.tool(description="Get sleep data for the last 30 days to compare baseline patterns and detect anomalies")
